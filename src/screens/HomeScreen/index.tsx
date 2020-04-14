@@ -1,9 +1,9 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {Text, View} from 'react-native';
 import {connect, ConnectedProps} from 'react-redux';
 
-import {usernameChanged} from '../../state/reducers/user';
-import {ReduxState} from "../../state";
+import {usernameChanged} from '../../store/reducers/user';
+import {ReduxState} from "../../store";
 import {TouchableOpacity} from "react-native-gesture-handler";
 
 const mapStateToProps = (state: ReduxState) => ({

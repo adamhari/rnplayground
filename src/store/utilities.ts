@@ -6,14 +6,12 @@ export interface GenericState<T> {
 	status?: 'loading' | 'finished' | 'error'
 }
 
-export const createGenericSlice = <
-	T,
-	Reducers extends SliceCaseReducers<GenericState<T>>
-	>({
-		  name = '',
-		  initialState,
-		  reducers
-	  }: {
+export const createGenericSlice = <T,
+	Reducers extends SliceCaseReducers<GenericState<T>>>({
+															 name = '',
+															 initialState,
+															 reducers
+														 }: {
 	name: string
 	initialState: GenericState<T>
 	reducers: ValidateSliceCaseReducers<GenericState<T>, Reducers>
