@@ -2,32 +2,41 @@ import React from "react";
 import {StyleSheet} from "react-native";
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import {createDrawerNavigator, DrawerContentScrollView, DrawerItem} from "@react-navigation/drawer";
+import {DrawerContentComponentProps} from "@react-navigation/drawer/lib/typescript/src/types";
 import Animated from "react-native-reanimated";
 import LinearGradient from 'react-native-linear-gradient';
 import HomeScreen from '../screens/HomeScreen';
+import AnotherScreen from '../screens/AnotherScreen';
 
-const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator();
 
-const Screens = ({ navigation, style }) => (
-	<Animated.View style={StyleSheet.flatten([styles.stack, style])}>
-		<Stack.Navigator headerMode={'none'}>
-			<Stack.Screen name="Home">{props => <HomeScreen {...props} />}</Stack.Screen>
-		</Stack.Navigator>
-	</Animated.View>
-);
+type DrawerScreensParamList = {
+	Screens: {}
+};
 
-const DrawerContent = props => (
+const Drawer = createDrawerNavigator<DrawerScreensParamList>();
+
+type DrawerStackParamList = {
+	Home: {},
+	Another: {}
+}
+
+const Stack = createStackNavigator<DrawerStackParamList>();
+
+const DrawerContent = (props: DrawerContentComponentProps) => (
 	<DrawerContentScrollView {...props} scrollEnabled={false}>
 		<DrawerItem
 			label="Home"
-			labelStyle={styles.drawerLabel}
-			style={styles.drawerItem}
+			labelStyle={{}}
 			onPress={() => props.navigation.navigate('Home')}
 		/>
 		<DrawerItem
+			label="Another"
+			labelStyle={{}}
+			onPress={() => props.navigation.navigate('Another')}
+		/>
+		<DrawerItem
 			label="Logout"
-			labelStyle={{ color: 'white' }}
+			labelStyle={{}}
 			onPress={() => props.navigation.navigate('Login')}
 		/>
 	</DrawerContentScrollView>
@@ -53,18 +62,22 @@ export default () => {
 				drawerType="slide"
 				overlayColor="transparent"
 				drawerStyle={styles.drawerStyles}
-				drawerContentOptions={{
-					activeBackgroundColor: 'transparent',
-					activeTintColor: 'white',
-					inactiveTintColor: 'white',
-				}}
 				sceneContainerStyle={{ backgroundColor: 'transparent' }}
-				drawerContent={props => {
+				drawerContent={(props: DrawerContentComponentProps) => {
 					setProgress(props.progress);
 					return <DrawerContent {...props} />;
 				}}>
-				<Drawer.Screen name="Screens">
-					{props => <Screens {...props} style={animatedStyle} />}
+				<Drawer.Screen name={'Screens'}>
+					{
+						props => (
+							<Animated.View style={StyleSheet.flatten([styles.stack, { borderRadius, transform: [{ scale }] }])}>
+								<Stack.Navigator headerMode={'none'} screenOptions={{gestureEnabled: false}}>
+									<Stack.Screen name={'Home'} component={HomeScreen} />
+									<Stack.Screen name={'Another'} component={AnotherScreen} />
+								</Stack.Navigator>
+							</Animated.View>
+						)
+					}
 				</Drawer.Screen>
 			</Drawer.Navigator>
 		</LinearGradient>
@@ -74,23 +87,15 @@ export default () => {
 const styles = StyleSheet.create({
 	stack: {
 		flex: 1,
-		shadowColor: '#FFF',
-		shadowOffset: {
-			width: 0,
-			height: 0,
-		},
-		shadowOpacity: 0.5,
-		shadowRadius: 10,
-		elevation: 5,
-		overflow: 'hidden'
+		overflow: 'hidden',
+		// shadowColor: '#FFF',
+		// shadowOffset: {
+		// 	width: 0,
+		// 	height: 0,
+		// },
+		// shadowOpacity: 0.5,
+		// shadowRadius: 10,
+		// elevation: 5,
 	},
 	drawerStyles: { flex: 1, width: '50%', backgroundColor: 'transparent' },
-	drawerItem: { alignItems: 'flex-start', marginVertical: 0 },
-	drawerLabel: { color: 'white' },
-	avatar: {
-		borderRadius: 60,
-		marginBottom: 16,
-		borderColor: 'white',
-		borderWidth: StyleSheet.hairlineWidth,
-	},
 });
