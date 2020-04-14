@@ -1,13 +1,18 @@
-import {configureStore, getDefaultMiddleware} from '@reduxjs/toolkit'
+import {configureStore, getDefaultMiddleware, Middleware} from '@reduxjs/toolkit'
 import logger from 'redux-logger';
+import thunk, {ThunkMiddleware} from 'redux-thunk';
 
-import reducer from './reducers';
+import slices from './slices';
 
-export type ReduxState = ReturnType<typeof reducer>;
+export type ReduxState = ReturnType<typeof slices>;
 
 const store = configureStore({
-	reducer,
-	middleware: [...getDefaultMiddleware<ReduxState>(), logger],
+	reducer: slices,
+	middleware: [
+		// ...getDefaultMiddleware<ReduxState>(),
+		thunk as ThunkMiddleware,
+		logger as Middleware
+	],
 	devTools: process.env.NODE_ENV !== 'production',
 	preloadedState: {},
 	enhancers: []

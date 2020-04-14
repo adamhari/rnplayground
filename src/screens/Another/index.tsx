@@ -16,7 +16,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 type State = {};
 type Props = PropsFromRedux & {};
 
-class AnotherScreen extends React.Component<Props, State> {
+class Another extends React.Component<Props, State> {
 
 	render() {
 		return (
@@ -27,4 +27,4 @@ class AnotherScreen extends React.Component<Props, State> {
 	}
 }
 
-export default connector(AnotherScreen);
+export default connector(Another);
