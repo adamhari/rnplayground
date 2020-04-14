@@ -11,8 +11,8 @@ export type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default () => (
-	<Stack.Navigator headerMode={'none'}>
+	<Stack.Navigator headerMode={'none'} screenOptions={{gestureEnabled: false}}>
 		<Stack.Screen name={"Login"} component={LoginScreen} />
-		<Stack.Screen name={"SignedIn"} component={SignedIn} options={{gestureEnabled: false}} />
+		<Stack.Screen name={"SignedIn"} component={SignedIn} />
 	</Stack.Navigator>
 )
