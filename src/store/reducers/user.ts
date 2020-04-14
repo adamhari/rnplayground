@@ -10,7 +10,7 @@ type SliceState = GenericState<UserState>;
 
 const initialState: SliceState = {
 	data: {
-		username: ''
+		username: 'adamhari'
 	}
 };
 
