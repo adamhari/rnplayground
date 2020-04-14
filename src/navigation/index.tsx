@@ -1,13 +1,18 @@
 import React from 'react';
 import {createStackNavigator} from "@react-navigation/stack";
-import SignedOutNavigation from './SignedOut';
-import SignedInNavigation from './SignedIn';
+import LoginScreen from '../screens/LoginScreen';
+import SignedIn from './SignedIn';
 
-const Stack = createStackNavigator();
+export type RootStackParamList = {
+	Login: {},
+	SignedIn: {}
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default () => (
 	<Stack.Navigator headerMode={'none'}>
-		{/*{SignedOutNavigation()}*/}
-		<Stack.Screen name={"SignedInNavigation"} component={SignedInNavigation} />
+		<Stack.Screen name={"Login"} component={LoginScreen} />
+		<Stack.Screen name={"SignedIn"} component={SignedIn} options={{gestureEnabled: false}} />
 	</Stack.Navigator>
 )
