@@ -18,8 +18,8 @@ const slice = createGenericSlice({
 	name: 'user',
 	initialState,
 	reducers: {
-		usernameChanged: (state, action: PayloadAction<string>) => {
-			state.data.username = action.payload;
+		usernameChanged: (state, {payload}: PayloadAction<string>) => {
+			state.data.username = payload;
 		}
 	}
 });
