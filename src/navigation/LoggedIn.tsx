@@ -1,10 +1,11 @@
 import React from "react";
-import {StyleSheet} from "react-native";
+import {Dimensions, StatusBar, StyleSheet} from "react-native";
 import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
-import {createDrawerNavigator, DrawerContentScrollView, DrawerItem} from "@react-navigation/drawer";
+import {createDrawerNavigator, DrawerContentScrollView, DrawerItem, useIsDrawerOpen} from "@react-navigation/drawer";
 import {DrawerContentComponentProps} from "@react-navigation/drawer/lib/typescript/src/types";
 import Animated from "react-native-reanimated";
 import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/AntDesign';
 import Home from '../screens/Home';
 import Another from '../screens/Another';
 
@@ -15,32 +16,41 @@ type LoggedInDrawerParamList = {
 
 const Drawer = createDrawerNavigator<LoggedInDrawerParamList>();
 
-type DrawerStackParamList = {
+type LoggedInDrawerStackParamList = {
 	Home: {},
 	Another: {}
 }
 
-const Stack = createStackNavigator<DrawerStackParamList>();
+const Stack = createStackNavigator<LoggedInDrawerStackParamList>();
 
-const DrawerContent = (props: DrawerContentComponentProps) => (
-	<DrawerContentScrollView {...props} scrollEnabled={false}>
-		<DrawerItem
-			label="Home"
-			labelStyle={{}}
-			onPress={() => props.navigation.navigate('Home')}
-		/>
-		<DrawerItem
-			label="Another"
-			labelStyle={{}}
-			onPress={() => props.navigation.navigate('Another')}
-		/>
-		<DrawerItem
-			label="Logout"
-			labelStyle={{}}
-			onPress={() => props.navigation.navigate('Login')}
-		/>
-	</DrawerContentScrollView>
-);
+const DrawerContent = (props: DrawerContentComponentProps) => {
+	const isDrawerOpen = useIsDrawerOpen();
+
+	return (
+		<DrawerContentScrollView {...props} scrollEnabled={false} style={styles.drawerContentContainer}>
+			<StatusBar animated={true} barStyle={isDrawerOpen ? 'light-content' : 'dark-content'} />
+			<DrawerItem
+				label="Home"
+				labelStyle={styles.drawerLabel}
+				onPress={() => props.navigation.navigate('Home')}
+				icon={() => <Icon name={'home'} size={18} style={styles.drawerIcon} />}
+			/>
+			<DrawerItem
+				label="Another"
+				labelStyle={styles.drawerLabel}
+				onPress={() => props.navigation.navigate('Another')}
+				icon={() => <Icon name={'picture'} size={18} style={styles.drawerIcon} />}
+			/>
+			<DrawerItem
+				label="Logout"
+				labelStyle={styles.drawerLabel}
+				onPress={() => props.navigation.navigate('LoggedOut')}
+				icon={() => <Icon name={'logout'} size={18} style={styles.drawerIcon} />}
+				style={{alignItems: 'flex-start'}}
+			/>
+		</DrawerContentScrollView>
+	);
+};
 
 export default () => {
 	const [progress, setProgress] = React.useState(new Animated.Value(0));
@@ -53,15 +63,17 @@ export default () => {
 		outputRange: [0, 16],
 	});
 
-	const animatedStyle = {borderRadius, transform: [{scale}]};
-
 	return (
-		<LinearGradient style={{flex: 1}} colors={['#E94057', '#4A00E0']}>
+		<LinearGradient
+			style={{flex: 1}}
+			colors={['darkviolet', 'red']}
+			start={{x: 0, y: 0}}
+			end={{x: 1, y: 1}}
+		>
 			<Drawer.Navigator
-				// hideStatusBar
 				drawerType="slide"
 				overlayColor="transparent"
-				drawerStyle={styles.drawerStyles}
+				drawerStyle={styles.drawer}
 				sceneContainerStyle={{backgroundColor: 'transparent'}}
 				drawerContent={(props: DrawerContentComponentProps) => {
 					setProgress(props.progress);
@@ -71,11 +83,19 @@ export default () => {
 				<Drawer.Screen name={'Screens'}>
 					{
 						props => (
-							<Animated.View style={StyleSheet.flatten([styles.stack, animatedStyle])}>
-								<Stack.Navigator headerMode={'none'} screenOptions={{gestureEnabled: false}}>
-									<Stack.Screen name={'Home'} component={Home} />
-									<Stack.Screen name={'Another'} component={Another} />
-								</Stack.Navigator>
+							<Animated.View style={StyleSheet.flatten([styles.outerStack, {transform: [{scale}]}])}>
+								<Animated.View style={StyleSheet.flatten([styles.innerStack, {borderRadius}])}>
+									<Stack.Navigator
+										headerMode={'none'}
+										screenOptions={{
+											gestureEnabled: false,
+											// animationEnabled: false
+										}}
+									>
+										<Stack.Screen name={'Home'} component={Home} />
+										<Stack.Screen name={'Another'} component={Another} />
+									</Stack.Navigator>
+								</Animated.View>
 							</Animated.View>
 						)
 					}
@@ -86,21 +106,36 @@ export default () => {
 };
 
 const styles = StyleSheet.create({
-	stack: {
+	outerStack: {
+		flex: 1,
+		shadowColor: 'black',
+		shadowOffset: {
+			width: 0,
+			height: 4,
+		},
+		shadowOpacity: 0.5,
+		shadowRadius: 8,
+		elevation: 5,
+	},
+	innerStack: {
 		flex: 1,
 		overflow: 'hidden',
-		// shadowColor: '#FFF',
-		// shadowOffset: {
-		// 	width: 0,
-		// 	height: 0,
-		// },
-		// shadowOpacity: 0.5,
-		// shadowRadius: 10,
-		// elevation: 5,
 	},
-	drawerStyles: {
+	drawer: {
 		flex: 1,
 		width: '50%',
 		backgroundColor: 'transparent'
+	},
+	drawerContentContainer: {
+		flex: 1,
+		marginVertical: Dimensions.get('screen').height / 10,
+	},
+	drawerIcon: {
+		color: 'white'
+	},
+	drawerLabel: {
+		color: 'white',
+		fontWeight: 'bold',
+		marginLeft: -8
 	},
 });
