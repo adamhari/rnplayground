@@ -1,10 +1,13 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 import {connect, ConnectedProps} from 'react-redux';
+import { RouteProp } from '@react-navigation/native';
+import {DrawerNavigationProp} from "@react-navigation/drawer";
 
 import {usernameChanged} from '../../store/slices/user';
 import {ReduxState} from "../../store";
 import {TouchableOpacity} from "react-native-gesture-handler";
+import {LoggedInDrawerParamList} from "../../navigation/LoggedIn";
 
 const mapStateToProps = (state: ReduxState) => ({
 	username: state.user.data.username
@@ -18,8 +21,16 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
+type HomeScreenRouteProp = RouteProp<LoggedInDrawerParamList, 'Home'>;
+type HomeScreenNavigationProp = DrawerNavigationProp<LoggedInDrawerParamList, 'Home'>;
+type PropsFromNavigation = {
+	route: HomeScreenRouteProp,
+	navigation: HomeScreenNavigationProp
+};
+
+type Props = PropsFromRedux & PropsFromNavigation;
+
 type State = {};
-type Props = PropsFromRedux & {};
 
 class Home extends React.Component<Props, State> {
 
