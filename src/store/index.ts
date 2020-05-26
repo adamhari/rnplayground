@@ -1,5 +1,6 @@
 import {configureStore, getDefaultMiddleware, Middleware} from '@reduxjs/toolkit'
 import logger from 'redux-logger';
+import flipper from 'redux-flipper';
 import thunk, {ThunkMiddleware} from 'redux-thunk';
 
 import slices from './slices';
@@ -10,10 +11,11 @@ const store = configureStore({
 	reducer: slices,
 	middleware: [
 		// ...getDefaultMiddleware<ReduxState>(),
+		flipper(),
 		thunk as ThunkMiddleware,
 		logger as Middleware
 	],
-	devTools: process.env.NODE_ENV !== 'production',
+	devTools: __DEV__,
 	preloadedState: {},
 	enhancers: []
 });
