@@ -8,7 +8,7 @@ function loadStories() {
 }
 
 const stories = [
-	'./stories/index'
+	'../src/components/Spinner/index.stories'
 ];
 
 module.exports = {
