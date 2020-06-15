@@ -12,15 +12,34 @@ interface ButtonProps {
 	textStyle: TextStyle
 }
 
+export const ButtonStyles: ViewStyle = {
+	backgroundColor: "#214fce",
+	borderRadius: 5,
+	paddingVertical: 10,
+	paddingHorizontal: 30
+};
+
+export const TextStyles: TextStyle = {
+	color: '#ffffff',
+	fontSize: 16,
+	fontWeight: "500"
+};
+
 export default ({ activeOpacity, disabled, icon, label, onLongPress, onPress, style, textStyle }: ButtonProps) => (
 	<TouchableOpacity
-		activeOpacity={activeOpacity}
+		activeOpacity={activeOpacity || 0.5}
 		disabled={disabled}
 		onLongPress={onLongPress}
 		onPress={onPress}
-		style={style}
+		style={[
+			ButtonStyles,
+			style,
+			disabled && {backgroundColor: 'lightgray'}
+		]}
 	>
 		{icon}
-		<Text style={textStyle}>{label}</Text>
+		<Text style={[TextStyles, textStyle]}>
+			{label}
+		</Text>
 	</TouchableOpacity>
 );
