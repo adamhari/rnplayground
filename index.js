@@ -6,4 +6,5 @@ import {name as appName} from './app.json';
 // AppRegistry.registerComponent(appName, () => App);
 
 import storybook from './storybook';
+console.disableYellowBox = true;
 export default storybook;
