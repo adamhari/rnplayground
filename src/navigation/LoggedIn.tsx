@@ -1,9 +1,10 @@
 import React from "react";
 import {Dimensions, StatusBar, StyleSheet} from "react-native";
+import {DrawerActions} from '@react-navigation/native';
 import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
-import {createDrawerNavigator, DrawerContentScrollView, DrawerItem, useIsDrawerOpen} from "@react-navigation/drawer";
+import {createDrawerNavigator, DrawerContentScrollView, DrawerItem} from "@react-navigation/drawer";
 import {DrawerContentComponentProps} from "@react-navigation/drawer/lib/typescript/src/types";
-import Animated from "react-native-reanimated";
+import Animated, {concat} from "react-native-reanimated";
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Home from '../screens/Home';
@@ -24,21 +25,25 @@ type LoggedInDrawerStackParamList = {
 const Stack = createStackNavigator<LoggedInDrawerStackParamList>();
 
 const DrawerContent = (props: DrawerContentComponentProps) => {
-	const isDrawerOpen = useIsDrawerOpen();
+	const handlePress = (routeName: string) => {
+		const {navigation} = props;
+		navigation.reset({index: 0, routes: [{name: routeName}]});
+		navigation.dispatch(DrawerActions.closeDrawer());
+	};
 
 	return (
 		<DrawerContentScrollView {...props} scrollEnabled={false} style={styles.drawerContentContainer}>
-			<StatusBar animated={true} barStyle={isDrawerOpen ? 'light-content' : 'dark-content'} />
+			<StatusBar animated={true} barStyle={'dark-content'} />
 			<DrawerItem
 				label="Home"
 				labelStyle={styles.drawerLabel}
-				onPress={() => props.navigation.navigate('Home')}
+				onPress={() => handlePress('Home')}
 				icon={() => <Icon name={'home'} size={18} style={styles.drawerIcon} />}
 			/>
 			<DrawerItem
 				label="Another"
 				labelStyle={styles.drawerLabel}
-				onPress={() => props.navigation.navigate('Another')}
+				onPress={() => handlePress('Another')}
 				icon={() => <Icon name={'picture'} size={18} style={styles.drawerIcon} />}
 			/>
 			<DrawerItem
@@ -46,7 +51,6 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
 				labelStyle={styles.drawerLabel}
 				onPress={() => props.navigation.navigate('LoggedOut')}
 				icon={() => <Icon name={'logout'} size={18} style={styles.drawerIcon} />}
-				style={{alignItems: 'flex-start'}}
 			/>
 		</DrawerContentScrollView>
 	);
@@ -62,20 +66,24 @@ export default () => {
 		inputRange: [0, 1],
 		outputRange: [0, 16],
 	});
+	const rotateY = Animated.interpolate(progress, {
+		inputRange: [0, 1],
+		outputRange: [0, -15]
+	});
 
 	return (
 		<LinearGradient
 			style={{flex: 1}}
-			colors={['darkviolet', 'red']}
+			colors={['deepskyblue', 'lightskyblue']}
 			start={{x: 0, y: 0}}
-			end={{x: 1, y: 1}}
+			end={{x: 0, y: 1}}
 		>
 			<Drawer.Navigator
 				drawerType="slide"
 				overlayColor="transparent"
 				drawerStyle={styles.drawer}
 				sceneContainerStyle={{backgroundColor: 'transparent'}}
-				drawerContent={(props: DrawerContentComponentProps) => {
+				drawerContent={(props: DrawerContentComponentProps) => {s
 					setProgress(props.progress);
 					return <DrawerContent {...props} />;
 				}}
@@ -83,13 +91,25 @@ export default () => {
 				<Drawer.Screen name={'Screens'}>
 					{
 						props => (
-							<Animated.View style={StyleSheet.flatten([styles.outerStack, {transform: [{scale}]}])}>
+							<Animated.View
+								style={
+									StyleSheet.flatten([
+										styles.outerStack,
+										{
+											transform: [
+												{scale},
+												{rotateY: concat(rotateY, 'deg')},
+											]
+										}
+									])
+								}
+							>
 								<Animated.View style={StyleSheet.flatten([styles.innerStack, {borderRadius}])}>
 									<Stack.Navigator
 										headerMode={'none'}
 										screenOptions={{
 											gestureEnabled: false,
-											// animationEnabled: false
+											gestureDirection: 'horizontal-inverted'
 										}}
 									>
 										<Stack.Screen name={'Home'} component={Home} />
@@ -115,7 +135,7 @@ const styles = StyleSheet.create({
 		},
 		shadowOpacity: 0.5,
 		shadowRadius: 8,
-		elevation: 5,
+		elevation: 5
 	},
 	innerStack: {
 		flex: 1,
@@ -128,13 +148,13 @@ const styles = StyleSheet.create({
 	},
 	drawerContentContainer: {
 		flex: 1,
-		marginVertical: Dimensions.get('screen').height / 10,
+		marginVertical: Dimensions.get('screen').height / 8,
 	},
 	drawerIcon: {
-		color: 'white'
+		color: 'black'
 	},
 	drawerLabel: {
-		color: 'white',
+		color: 'black',
 		fontWeight: 'bold',
 		marginLeft: -8
 	},
