@@ -76,14 +76,14 @@ export default () => {
 			style={{flex: 1}}
 			colors={['deepskyblue', 'lightskyblue']}
 			start={{x: 0, y: 0}}
-			end={{x: 0, y: 1}}
+			end={{x: 1, y: 1}}
 		>
 			<Drawer.Navigator
 				drawerType="slide"
 				overlayColor="transparent"
 				drawerStyle={styles.drawer}
 				sceneContainerStyle={{backgroundColor: 'transparent'}}
-				drawerContent={(props: DrawerContentComponentProps) => {s
+				drawerContent={(props: DrawerContentComponentProps) => {
 					setProgress(props.progress);
 					return <DrawerContent {...props} />;
 				}}
