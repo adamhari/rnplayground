@@ -3,14 +3,14 @@ import {PayloadAction} from "@reduxjs/toolkit";
 import {createGenericSlice, GenericState} from "../utilities";
 
 type UserState = {
-	username: string
+	taps: number
 };
 
 type SliceState = GenericState<UserState>;
 
 const initialState: SliceState = {
 	data: {
-		username: 'adamh'
+		taps: 0
 	}
 };
 
@@ -18,13 +18,13 @@ const slice = createGenericSlice({
 	name: 'user',
 	initialState,
 	reducers: {
-		usernameChanged: (state, {payload}: PayloadAction<string>) => {
-			state.data.username = payload;
+		tapped: (state, {payload}: PayloadAction<void>) => {
+			state.data.taps++;
 		}
 	}
 });
 
 const {actions, reducer} = slice;
-export const {usernameChanged} = actions;
+export const {tapped} = actions;
 
 export default reducer;
