@@ -20,8 +20,8 @@ class Another extends React.Component<Props, State> {
 
 	render() {
 		return (
-			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-				<Text>Another Screen</Text>
+			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'black'}}>
+				<Text style={{color: 'white'}}>Another Screen</Text>
 			</View>
 		)
 	}
