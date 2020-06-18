@@ -6,8 +6,8 @@ import {DrawerNavigationProp} from "@react-navigation/drawer";
 
 import {tapped} from '../../store/slices/user';
 import {ReduxState} from "../../store";
-import {TouchableOpacity} from "react-native-gesture-handler";
-import {LoggedInDrawerParamList} from "../../navigation/LoggedIn";
+import {LoggedInDrawerStackParamList} from "../../navigation/LoggedIn";
+import Target from "../../components/Target";
 
 const mapStateToProps = (state: ReduxState) => ({
 	taps: state.user.data.taps
@@ -21,8 +21,8 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-type HomeScreenRouteProp = RouteProp<LoggedInDrawerParamList, 'Home'>;
-type HomeScreenNavigationProp = DrawerNavigationProp<LoggedInDrawerParamList, 'Home'>;
+type HomeScreenRouteProp = RouteProp<LoggedInDrawerStackParamList, 'Home'>;
+type HomeScreenNavigationProp = DrawerNavigationProp<LoggedInDrawerStackParamList, 'Home'>;
 type PropsFromNavigation = {
 	route: HomeScreenRouteProp,
 	navigation: HomeScreenNavigationProp
@@ -38,11 +38,9 @@ class Home extends React.Component<Props, State> {
 
 	render() {
 		return (
-			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-				<TouchableOpacity onPress={this.onPress}>
-					<Text>tap</Text>
-				</TouchableOpacity>
-				<Text>taps: {this.props.taps.toString()}</Text>
+			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white'}}>
+				<Target onPress={this.onPress} />
+				<Text>Score: {this.props.taps.toString()}</Text>
 			</View>
 		)
 	}
