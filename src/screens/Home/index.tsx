@@ -8,6 +8,7 @@ import {tapped} from '../../store/slices/user';
 import {ReduxState} from "../../store";
 import {LoggedInDrawerStackParamList} from "../../navigation/LoggedIn";
 import Target from "../../components/Target";
+import Truck from "../../components/Truck";
 
 const mapStateToProps = (state: ReduxState) => ({
 	taps: state.user.data.taps
@@ -38,9 +39,10 @@ class Home extends React.Component<Props, State> {
 
 	render() {
 		return (
-			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white'}}>
+			<View style={{flex: 1, justifyContent: 'space-around', alignItems: 'center', backgroundColor: 'white'}}>
 				<Target onPress={this.onPress} />
 				<Text>Score: {this.props.taps.toString()}</Text>
+				<Truck onPress={this.onPress} />
 			</View>
 		)
 	}
