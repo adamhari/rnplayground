@@ -11,7 +11,7 @@ export default () => (
     <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
             <NavigationContainer>
-                <StatusBar barStyle="dark-content" />
+                <StatusBar barStyle={'light-content'} />
                 <Navigation />
             </NavigationContainer>
         </PersistGate>

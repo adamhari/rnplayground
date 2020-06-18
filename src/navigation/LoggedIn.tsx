@@ -1,8 +1,8 @@
 import React from "react";
-import {Dimensions, StatusBar, StyleSheet} from "react-native";
-import {DrawerActions} from '@react-navigation/native';
+import {Dimensions, StyleSheet} from "react-native";
+import {DrawerActions, RouteProp} from '@react-navigation/native';
 import {createStackNavigator, StackNavigationProp} from '@react-navigation/stack';
-import {createDrawerNavigator, DrawerContentScrollView, DrawerItem} from "@react-navigation/drawer";
+import {createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerNavigationProp} from "@react-navigation/drawer";
 import {DrawerContentComponentProps} from "@react-navigation/drawer/lib/typescript/src/types";
 import Animated, {concat} from "react-native-reanimated";
 import LinearGradient from 'react-native-linear-gradient';
@@ -10,14 +10,13 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import Home from '../screens/Home';
 import Another from '../screens/Another';
 
-
 type LoggedInDrawerParamList = {
 	Screens: {}
 };
 
 const Drawer = createDrawerNavigator<LoggedInDrawerParamList>();
 
-type LoggedInDrawerStackParamList = {
+export type LoggedInDrawerStackParamList = {
 	Home: {},
 	Another: {}
 }
@@ -33,41 +32,88 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
 
 	return (
 		<DrawerContentScrollView {...props} scrollEnabled={false} style={styles.drawerContentContainer}>
-			<StatusBar animated={true} barStyle={'dark-content'} />
 			<DrawerItem
 				label="Home"
 				labelStyle={styles.drawerLabel}
 				onPress={() => handlePress('Home')}
-				icon={() => <Icon name={'home'} size={18} style={styles.drawerIcon} />}
+				icon={({focused, color, size}) => <Icon name={'home'} color={color} size={size} style={styles.drawerIcon} />}
+				activeTintColor={'red'}
+				inactiveTintColor={'white'}
 			/>
 			<DrawerItem
 				label="Another"
 				labelStyle={styles.drawerLabel}
 				onPress={() => handlePress('Another')}
-				icon={() => <Icon name={'picture'} size={18} style={styles.drawerIcon} />}
+				icon={({focused, color, size})  => <Icon name={'picture'} color={color} size={size} style={styles.drawerIcon} />}
+				activeTintColor={'red'}
+				inactiveTintColor={'white'}
 			/>
 			<DrawerItem
 				label="Logout"
 				labelStyle={styles.drawerLabel}
 				onPress={() => props.navigation.navigate('LoggedOut')}
-				icon={() => <Icon name={'logout'} size={18} style={styles.drawerIcon} />}
+				icon={({focused, color, size})  => <Icon name={'logout'} color={color} size={size} style={styles.drawerIcon} />}
+				activeTintColor={'red'}
+				inactiveTintColor={'white'}
 			/>
 		</DrawerContentScrollView>
 	);
 };
 
+type DrawerScreenContainerRouteProp = RouteProp<LoggedInDrawerParamList, 'Screens'>
+type DrawerScreenContainerNavigationProp = DrawerNavigationProp<LoggedInDrawerParamList, 'Screens'>;
+type DrawerScreenContainerNavigationProps = {
+	route: DrawerScreenContainerRouteProp,
+	navigation: DrawerScreenContainerNavigationProp
+};
+type DrawerScreenContainerProps = DrawerScreenContainerNavigationProps & {
+	scale: Animated.Node<number>,
+	borderRadius: Animated.Node<number>,
+	rotateY: Animated.Node<number>
+};
+
+const DrawerScreenContainer = ({scale, borderRadius, rotateY, ...props}: DrawerScreenContainerProps) => (
+	<Animated.View
+		style={
+			StyleSheet.flatten([
+				styles.outerStack,
+				{
+					transform: [
+						{scale},
+						{rotateY: concat(rotateY, 'deg')},
+					]
+				}
+			])
+		}
+	>
+		<Animated.View style={StyleSheet.flatten([styles.innerStack, {borderRadius}])}>
+			<Stack.Navigator
+				headerMode={'none'}
+				screenOptions={{
+					gestureEnabled: false,
+					gestureDirection: 'horizontal-inverted'
+				}}
+			>
+				<Stack.Screen name={'Home'} component={Home} />
+				<Stack.Screen name={'Another'} component={Another} />
+			</Stack.Navigator>
+		</Animated.View>
+	</Animated.View>
+);
+
 export default () => {
 	const [progress, setProgress] = React.useState(new Animated.Value(0));
+	const inputRange = [0, 1];
 	const scale = Animated.interpolate(progress, {
-		inputRange: [0, 1],
+		inputRange,
 		outputRange: [1, 0.8],
 	});
 	const borderRadius = Animated.interpolate(progress, {
-		inputRange: [0, 1],
+		inputRange,
 		outputRange: [0, 16],
 	});
 	const rotateY = Animated.interpolate(progress, {
-		inputRange: [0, 1],
+		inputRange,
 		outputRange: [0, -15]
 	});
 
@@ -90,33 +136,13 @@ export default () => {
 			>
 				<Drawer.Screen name={'Screens'}>
 					{
-						props => (
-							<Animated.View
-								style={
-									StyleSheet.flatten([
-										styles.outerStack,
-										{
-											transform: [
-												{scale},
-												{rotateY: concat(rotateY, 'deg')},
-											]
-										}
-									])
-								}
-							>
-								<Animated.View style={StyleSheet.flatten([styles.innerStack, {borderRadius}])}>
-									<Stack.Navigator
-										headerMode={'none'}
-										screenOptions={{
-											gestureEnabled: false,
-											gestureDirection: 'horizontal-inverted'
-										}}
-									>
-										<Stack.Screen name={'Home'} component={Home} />
-										<Stack.Screen name={'Another'} component={Another} />
-									</Stack.Navigator>
-								</Animated.View>
-							</Animated.View>
+						(props) => (
+							<DrawerScreenContainer
+								{...props}
+								scale={scale}
+								borderRadius={borderRadius}
+								rotateY={rotateY}
+							/>
 						)
 					}
 				</Drawer.Screen>
@@ -151,10 +177,8 @@ const styles = StyleSheet.create({
 		marginVertical: Dimensions.get('screen').height / 8,
 	},
 	drawerIcon: {
-		color: 'black'
 	},
 	drawerLabel: {
-		color: 'black',
 		fontWeight: 'bold',
 		marginLeft: -8
 	},
