@@ -18,7 +18,9 @@ const getRandomPosition = (xAxis: boolean): number => {
 };
 
 export default ({onPress}: TargetProps) => {
-	const translateValue = useRef(new Animated.ValueXY({x: 0, y: 0})).current;
+	const translateValue = useRef(
+		new Animated.ValueXY({x: getRandomPosition(true), y: getRandomPosition(false)})
+	).current;
 
 	const moveTarget = () => {
 		const translateAnim = Animated.timing(translateValue, {
@@ -27,7 +29,7 @@ export default ({onPress}: TargetProps) => {
 				y: getRandomPosition(false)
 			},
 			duration: 1000,
-			useNativeDriver: true
+			useNativeDriver: false
 		});
 		translateAnim.start()
 	};

@@ -37,10 +37,14 @@ class Home extends React.Component<Props, State> {
 
 	onPress = () => this.props.tapped();
 
+	renderTargets = (x) => Array.apply(null, { length: x }).map(() => (
+		<Target onPress={this.onPress} />
+	));
+
 	render() {
 		return (
 			<View style={{flex: 1, justifyContent: 'space-around', alignItems: 'center', backgroundColor: 'white'}}>
-				<Target onPress={this.onPress} />
+				{this.renderTargets(1)}
 				<Text>Score: {this.props.taps.toString()}</Text>
 				<Truck onPress={this.onPress} />
 			</View>
