@@ -4,7 +4,9 @@
         "tslint:recommended"
     ],
     "jsRules": {},
-    "rules": {},
+    "rules": {
+        "no-trailing-whitespace": [true, "ignore-blank-lines"]
+    },
     "rulesDirectory": [],
-    "whitespace": false
+    "whitespace": true
 }
